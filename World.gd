@@ -4,6 +4,7 @@ var isDrawing = false
 var drawingTimer = 0
 var pointerPositions
 var screenSize
+onready var controller = get_node("Controller")
 
 func _initializePointerPositions(pos):
 	pointerPositions = [pos]
@@ -20,7 +21,7 @@ func _arePointerPositionsValid():
 	if not pointerPositions[0]:
 		return false
 	if pointerPositions[0] and not pointerPositions[1]:
-		pointerPositions[1] = get_global_mouse_position()
+		pointerPositions[1] = controller.position
 	return true
 
 func _ready():
@@ -61,11 +62,11 @@ func _input(event):
 	match event.get_class():
 		"InputEventMouseButton":
 			if event.pressed:
-				_initializePointerPositions(get_canvas_transform().xform_inv(event.position))
+				_initializePointerPositions(controller.position)
 				isDrawing = true
 			else:
 				isDrawing = false
 		"InputEventMouseMotion":
 			if isDrawing:
-				_updateEndPosition(get_canvas_transform().xform_inv(event.position))
+				_updateEndPosition(controller.position)
 		
